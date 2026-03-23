@@ -2,76 +2,160 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alex - Interactive Checklist</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Interactive Checklist - Alex</title>
     <style>
-        body { font-family: sans-serif; background-color: #fdf2f2; display: flex; justify-content: center; padding: 20px; }
-        table { border-collapse: collapse; width: 900px; background: white; border: 2px solid #e5989b; }
-        th { background-color: #f2a6a6; color: #4a1e36; padding: 15px; border: 1px solid #e5989b; }
-        td { border: 1px solid #e5989b; padding: 10px; vertical-align: middle; background-color: #ffe5d9; }
-        .header-pink { background-color: #f2a6a6; text-align: center; font-weight: bold; font-size: 1.2rem; }
-        .select-btn { padding: 8px 12px; border-radius: 20px; border: 1px solid #ccc; cursor: pointer; background: #eee; font-size: 0.9rem; transition: 0.3s; width: 100px; text-align: center; }
-        .status-yes { background-color: #4CAF50 !important; color: white; }
-        .status-no { background-color: #ff4d4d !important; color: white; }
-        .score-row { font-weight: bold; background-color: #f2a6a6; }
+        :root {
+            --primary-pink: #f2a6a6;
+            --border-pink: #e5989b;
+            --bg-peach: #fdf2f2;
+            --cell-peach: #ffe5d9;
+            --text-dark: #4a1e36;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Roboto, sans-serif; 
+            background-color: var(--bg-peach); 
+            margin: 0; 
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container { width: 100%; max-width: 900px; }
+
+        .header {
+            background-color: var(--primary-pink);
+            color: var(--text-dark);
+            text-align: center;
+            padding: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border: 2px solid var(--border-pink);
+            border-bottom: none;
+            border-radius: 10px 10px 0 0;
+        }
+
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            background: white; 
+            border: 2px solid var(--border-pink);
+        }
+
+        th, td { 
+            border: 1px solid var(--border-pink); 
+            padding: 12px; 
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        th { background-color: var(--primary-pink); color: var(--text-dark); text-align: center; font-size: 0.9rem; }
+
+        tr:nth-child(even) td { background-color: var(--cell-peach); }
+
+        /* Button Styling */
+        .select-btn { 
+            padding: 12px 8px; 
+            border-radius: 8px; 
+            border: 1px solid #ccc; 
+            cursor: pointer; 
+            background: #fff; 
+            font-size: 13px; 
+            font-weight: bold;
+            text-align: center;
+            transition: 0.2s;
+            display: block;
+            width: 90%;
+            margin: auto;
+        }
+
+        .status-yes { background-color: #4CAF50 !important; color: white; border-color: #2E7D32; }
+        .status-no { background-color: #f44336 !important; color: white; border-color: #C62828; }
+
+        .score-row { background-color: var(--primary-pink) !important; font-weight: bold; text-align: center; }
+
+        /* MOBILE OPTIMIZATION */
+        @media screen and (max-width: 700px) {
+            /* Hide the table headers on mobile */
+            thead { display: none; }
+
+            table, tbody, tr, td { display: block; width: 100%; }
+
+            tr { margin-bottom: 20px; border: 2px solid var(--border-pink); border-radius: 8px; overflow: hidden; }
+
+            td { 
+                text-align: right; 
+                padding-left: 50%; 
+                position: relative; 
+                border-bottom: 1px solid #eee;
+                min-height: 40px;
+            }
+
+            /* Add labels before data on mobile */
+            td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 10px;
+                width: 45%;
+                font-weight: bold;
+                text-align: left;
+                color: var(--text-dark);
+            }
+
+            .select-btn { width: 100%; margin: 5px 0; }
+            .score-row td { text-align: center; padding-left: 10px; }
+            .score-row td::before { content: ""; }
+        }
     </style>
 </head>
 <body>
 
-<table>
-    <tr>
-        <th colspan="5" class="header-pink">Check-list</th>
-    </tr>
-    <tr>
-        <th>Instruction</th>
-        <th>Alex - The Earner</th>
-        <th>Select</th>
-        <th>Alex - The Learner</th>
-        <th>Select</th>
-    </tr>
-    <tr>
-        <td>Mark ✅ or ❌</td>
-        <td>Struggles through logic to understand why</td>
-        <td><div class="select-btn" onclick="toggleBtn(this, 'earner')">Select ▾</div></td>
-        <td>Uses AI to generate quick answers</td>
-        <td><div class="select-btn" onclick="toggleBtn(this, 'learner')">Select ▾</div></td>
-    </tr>
-    <tr>
-        <td>Mark ✅ or ❌</td>
-        <td>Researches tools, watches tutorials, starts side projects</td>
-        <td><div class="select-btn" onclick="toggleBtn(this, 'earner')">Select ▾</div></td>
-        <td>Spends time doom-scrolling on phone</td>
-        <td><div class="select-btn" onclick="toggleBtn(this, 'learner')">Select ▾</div></td>
-    </tr>
-    <tr>
-        <td>Mark ✅ or ❌</td>
-        <td>Treats labs/projects like a real-world portfolio</td>
-        <td><div class="select-btn" onclick="toggleBtn(this, 'earner')">Select ▾</div></td>
-        <td>Focuses only on theory to pass exams</td>
-        <td><div class="select-btn" onclick="toggleBtn(this, 'learner')">Select ▾</div></td>
-    </tr>
-    <tr>
-        <td>Mark ✅ or ❌</td>
-        <td>Spends hours fixing bugs before asking</td>
-        <td><div class="select-btn" onclick="toggleBtn(this, 'earner')">Select ▾</div></td>
-        <td>Gives up quickly and asks for help</td>
-        <td><div class="select-btn" onclick="toggleBtn(this, 'learner')">Select ▾</div></td>
-    </tr>
-    <tr>
-        <td>Mark ✅ or ❌</td>
-        <td>Can explain how a solution works in his own words</td>
-        <td><div class="select-btn" onclick="toggleBtn(this, 'earner')">Select ▾</div></td>
-        <td>Recites terms without deep understanding</td>
-        <td><div class="select-btn" onclick="toggleBtn(this, 'learner')">Select ▾</div></td>
-    </tr>
-    <tr class="score-row">
-        <td>Mark ✅ or ❌</td>
-        <td>Total Score: <span id="earnerScore">0</span> points</td>
-        <td></td>
-        <td>Total Score: <span id="learnerScore">0</span> points</td>
-        <td></td>
-    </tr>
-</table>
+<div class="container">
+    <div class="header">Check-list: Earner vs Learner</div>
+    <table>
+        <thead>
+            <tr>
+                <th>Instruction</th>
+                <th>Alex - The Earner</th>
+                <th>Select</th>
+                <th>Alex - The Learner</th>
+                <th>Select</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td data-label="Instruction">Mark ✅ or ❌</td>
+                <td data-label="Earner">Struggles through logic to understand why</td>
+                <td data-label="Choice"><div class="select-btn" onclick="toggleBtn(this, 'earner')">Select ▾</div></td>
+                <td data-label="Learner">Uses AI to generate quick answers</td>
+                <td data-label="Choice"><div class="select-btn" onclick="toggleBtn(this, 'learner')">Select ▾</div></td>
+            </tr>
+            <tr>
+                <td data-label="Instruction">Mark ✅ or ❌</td>
+                <td data-label="Earner">Researches tools & side projects</td>
+                <td data-label="Choice"><div class="select-btn" onclick="toggleBtn(this, 'earner')">Select ▾</div></td>
+                <td data-label="Learner">Spends time doom-scrolling</td>
+                <td data-label="Choice"><div class="select-btn" onclick="toggleBtn(this, 'learner')">Select ▾</div></td>
+            </tr>
+            <tr>
+                <td data-label="Instruction">Mark ✅ or ❌</td>
+                <td data-label="Earner">Treats projects like a portfolio</td>
+                <td data-label="Choice"><div class="select-btn" onclick="toggleBtn(this, 'earner')">Select ▾</div></td>
+                <td data-label="Learner">Focuses only on passing exams</td>
+                <td data-label="Choice"><div class="select-btn" onclick="toggleBtn(this, 'learner')">Select ▾</div></td>
+            </tr>
+            <tr class="score-row">
+                <td>SCORES</td>
+                <td>Earner: <span id="earnerScore">0</span></td>
+                <td></td>
+                <td>Learner: <span id="learnerScore">0</span></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
 <script>
     let scores = { earner: 0, learner: 0 };
