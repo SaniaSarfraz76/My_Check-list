@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alex - Interactive Checklist</title>
+    <style>
+        body { font-family: sans-serif; background-color: #fdf2f2; display: flex; justify-content: center; padding: 20px; }
+        table { border-collapse: collapse; width: 900px; background: white; border: 2px solid #e5989b; }
+        th { background-color: #f2a6a6; color: #4a1e36; padding: 15px; border: 1px solid #e5989b; }
+        td { border: 1px solid #e5989b; padding: 10px; vertical-align: middle; background-color: #ffe5d9; }
+        .header-pink { background-color: #f2a6a6; text-align: center; font-weight: bold; font-size: 1.2rem; }
+        .select-btn { padding: 8px 12px; border-radius: 20px; border: 1px solid #ccc; cursor: pointer; background: #eee; font-size: 0.9rem; transition: 0.3s; width: 100px; text-align: center; }
+        .status-yes { background-color: #4CAF50 !important; color: white; }
+        .status-no { background-color: #ff4d4d !important; color: white; }
+        .score-row { font-weight: bold; background-color: #f2a6a6; }
+    </style>
+</head>
+<body>
+
+<table>
+    <tr>
+        <th colspan="5" class="header-pink">Check-list</th>
+    </tr>
+    <tr>
+        <th>Instruction</th>
+        <th>Alex - The Earner</th>
+        <th>Select</th>
+        <th>Alex - The Learner</th>
+        <th>Select</th>
+    </tr>
+    <tr>
+        <td>Mark ✅ or ❌</td>
+        <td>Struggles through logic to understand why</td>
+        <td><div class="select-btn" onclick="toggleBtn(this, 'earner')">Select ▾</div></td>
+        <td>Uses AI to generate quick answers</td>
+        <td><div class="select-btn" onclick="toggleBtn(this, 'learner')">Select ▾</div></td>
+    </tr>
+    <tr>
+        <td>Mark ✅ or ❌</td>
+        <td>Researches tools, watches tutorials, starts side projects</td>
+        <td><div class="select-btn" onclick="toggleBtn(this, 'earner')">Select ▾</div></td>
+        <td>Spends time doom-scrolling on phone</td>
+        <td><div class="select-btn" onclick="toggleBtn(this, 'learner')">Select ▾</div></td>
+    </tr>
+    <tr>
+        <td>Mark ✅ or ❌</td>
+        <td>Treats labs/projects like a real-world portfolio</td>
+        <td><div class="select-btn" onclick="toggleBtn(this, 'earner')">Select ▾</div></td>
+        <td>Focuses only on theory to pass exams</td>
+        <td><div class="select-btn" onclick="toggleBtn(this, 'learner')">Select ▾</div></td>
+    </tr>
+    <tr>
+        <td>Mark ✅ or ❌</td>
+        <td>Spends hours fixing bugs before asking</td>
+        <td><div class="select-btn" onclick="toggleBtn(this, 'earner')">Select ▾</div></td>
+        <td>Gives up quickly and asks for help</td>
+        <td><div class="select-btn" onclick="toggleBtn(this, 'learner')">Select ▾</div></td>
+    </tr>
+    <tr>
+        <td>Mark ✅ or ❌</td>
+        <td>Can explain how a solution works in his own words</td>
+        <td><div class="select-btn" onclick="toggleBtn(this, 'earner')">Select ▾</div></td>
+        <td>Recites terms without deep understanding</td>
+        <td><div class="select-btn" onclick="toggleBtn(this, 'learner')">Select ▾</div></td>
+    </tr>
+    <tr class="score-row">
+        <td>Mark ✅ or ❌</td>
+        <td>Total Score: <span id="earnerScore">0</span> points</td>
+        <td></td>
+        <td>Total Score: <span id="learnerScore">0</span> points</td>
+        <td></td>
+    </tr>
+</table>
+
+<script>
+    let scores = { earner: 0, learner: 0 };
+
+    function toggleBtn(btn, type) {
+        if (btn.innerText === "Select ▾") {
+            btn.innerText = "✅ Yes";
+            btn.className = "select-btn status-yes";
+            scores[type] += 2;
+        } else if (btn.innerText === "✅ Yes") {
+            btn.innerText = "❌ No";
+            btn.className = "select-btn status-no";
+            scores[type] -= 2;
+        } else {
+            btn.innerText = "Select ▾";
+            btn.className = "select-btn";
+        }
+        document.getElementById('earnerScore').innerText = scores.earner;
+        document.getElementById('learnerScore').innerText = scores.learner;
+    }
+</script>
+
+</body>
+</html>
