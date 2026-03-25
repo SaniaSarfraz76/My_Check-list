@@ -2,180 +2,236 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Interactive Checklist - Alex</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Readiness Checklist</title>
     <style>
         :root {
-            --primary-pink: #f2a6a6;
-            --border-pink: #e5989b;
-            --bg-peach: #fdf2f2;
-            --cell-peach: #ffe5d9;
-            --text-dark: #4a1e36;
+            --primary-rose: #E8A2A8;
+            --light-peach: #FFEEDC;
+            --dark-text: #5A2A2E;
+            --white: #ffffff;
         }
 
-        body { 
-            font-family: 'Segoe UI', Roboto, sans-serif; 
-            background-color: var(--bg-peach); 
-            margin: 0; 
-            padding: 15px;
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f4f4;
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            margin: 0;
         }
 
-        .container { width: 100%; max-width: 900px; }
-
-        .header {
-            background-color: var(--primary-pink);
-            color: var(--text-dark);
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
             text-align: center;
+        }
+
+        .header-section {
+            background-color: var(--primary-rose);
+            padding: 30px;
+            color: var(--dark-text);
+        }
+
+        h1 { margin: 0; font-size: 2.5rem; text-transform: uppercase; letter-spacing: 2px; }
+        p.subtitle { margin: 10px 0 0; font-size: 1.2rem; font-style: italic; }
+
+        .question-container {
             padding: 20px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            border: 2px solid var(--border-pink);
-            border-bottom: none;
-            border-radius: 10px 10px 0 0;
+            background-color: var(--light-peach);
         }
 
-        table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            background: white; 
-            border: 2px solid var(--border-pink);
-        }
-
-        th, td { 
-            border: 1px solid var(--border-pink); 
-            padding: 12px; 
+        .question-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid rgba(232, 162, 168, 0.3);
             text-align: left;
-            vertical-align: middle;
         }
 
-        th { background-color: var(--primary-pink); color: var(--text-dark); text-align: center; font-size: 0.9rem; }
+        .question-text { font-size: 1.05rem; width: 70%; color: #333; }
 
-        tr:nth-child(even) td { background-color: var(--cell-peach); }
+        .options {
+            display: flex;
+            gap: 10px;
+        }
 
-        /* Button Styling */
-        .select-btn { 
-            padding: 12px 8px; 
-            border-radius: 8px; 
-            border: 1px solid #ccc; 
-            cursor: pointer; 
-            background: #fff; 
-            font-size: 13px; 
+        .btn-opt {
+            padding: 8px 15px;
+            border: 2px solid var(--primary-rose);
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
             font-weight: bold;
-            text-align: center;
-            transition: 0.2s;
-            display: block;
-            width: 90%;
-            margin: auto;
+            transition: 0.3s;
         }
 
-        .status-yes { background-color: #4CAF50 !important; color: white; border-color: #2E7D32; }
-        .status-no { background-color: #f44336 !important; color: white; border-color: #C62828; }
+        .btn-opt.selected {
+            background-color: var(--primary-rose);
+            color: white;
+        }
 
-        .score-row { background-color: var(--primary-pink) !important; font-weight: bold; text-align: center; }
+        .footer-action {
+            padding: 30px;
+            background: var(--white);
+        }
 
-        /* MOBILE OPTIMIZATION */
-        @media screen and (max-width: 700px) {
-            /* Hide the table headers on mobile */
-            thead { display: none; }
+        .calculate-btn {
+            background-color: var(--dark-text);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
 
-            table, tbody, tr, td { display: block; width: 100%; }
+        .calculate-btn:hover { transform: scale(1.05); background: #3D1C1F; }
 
-            tr { margin-bottom: 20px; border: 2px solid var(--border-pink); border-radius: 8px; overflow: hidden; }
+        /* Results Screen */
+        #result-screen {
+            display: none;
+            padding: 40px;
+            background: #2C3E50;
+            color: white;
+        }
 
-            td { 
-                text-align: right; 
-                padding-left: 50%; 
-                position: relative; 
-                border-bottom: 1px solid #eee;
-                min-height: 40px;
-            }
+        .result-box {
+            border: 2px solid var(--primary-rose);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
 
-            /* Add labels before data on mobile */
-            td::before {
-                content: attr(data-label);
-                position: absolute;
-                left: 10px;
-                width: 45%;
-                font-weight: bold;
-                text-align: left;
-                color: var(--text-dark);
-            }
-
-            .select-btn { width: 100%; margin: 5px 0; }
-            .score-row td { text-align: center; padding-left: 10px; }
-            .score-row td::before { content: ""; }
+        .category-name { font-size: 2rem; color: var(--primary-rose); margin-bottom: 10px; }
+        .score-summary { font-size: 1.1rem; margin-bottom: 20px; opacity: 0.9; }
+        
+        .retry-btn {
+            background: transparent;
+            border: 1px solid white;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header">Check-list: Earner vs Learner</div>
-    <table>
-        <thead>
-            <tr>
-                <th>Instruction</th>
-                <th>Alex - The Earner</th>
-                <th>Select</th>
-                <th>Alex - The Learner</th>
-                <th>Select</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td data-label="Instruction">Mark ✅ or ❌</td>
-                <td data-label="Earner">Struggles through logic to understand why</td>
-                <td data-label="Choice"><div class="select-btn" onclick="toggleBtn(this, 'earner')">Select ▾</div></td>
-                <td data-label="Learner">Uses AI to generate quick answers</td>
-                <td data-label="Choice"><div class="select-btn" onclick="toggleBtn(this, 'learner')">Select ▾</div></td>
-            </tr>
-            <tr>
-                <td data-label="Instruction">Mark ✅ or ❌</td>
-                <td data-label="Earner">Researches tools & side projects</td>
-                <td data-label="Choice"><div class="select-btn" onclick="toggleBtn(this, 'earner')">Select ▾</div></td>
-                <td data-label="Learner">Spends time doom-scrolling</td>
-                <td data-label="Choice"><div class="select-btn" onclick="toggleBtn(this, 'learner')">Select ▾</div></td>
-            </tr>
-            <tr>
-                <td data-label="Instruction">Mark ✅ or ❌</td>
-                <td data-label="Earner">Treats projects like a portfolio</td>
-                <td data-label="Choice"><div class="select-btn" onclick="toggleBtn(this, 'earner')">Select ▾</div></td>
-                <td data-label="Learner">Focuses only on passing exams</td>
-                <td data-label="Choice"><div class="select-btn" onclick="toggleBtn(this, 'learner')">Select ▾</div></td>
-            </tr>
-            <tr class="score-row">
-                <td>SCORES</td>
-                <td>Earner: <span id="earnerScore">0</span></td>
-                <td></td>
-                <td>Learner: <span id="learnerScore">0</span></td>
-                <td></td>
-            </tr>
-        </tbody>
-    </table>
+    <div id="quiz-screen">
+        <div class="header-section">
+            <h1>Checklist</h1>
+            <p class="subtitle">Are you a Learner or an Earner?</p>
+        </div>
+
+        <div class="question-container" id="questions-list">
+            </div>
+
+        <div class="footer-action">
+            <button class="calculate-btn" onclick="processResults()">Show My Status</button>
+        </div>
+    </div>
+
+    <div id="result-screen">
+        <h2 id="status-title">YOUR STATUS</h2>
+        <div class="result-box">
+            <div class="category-name" id="category-display">Calculating...</div>
+            <p id="message-display"></p>
+        </div>
+        <div class="score-summary" id="score-details"></div>
+        <button class="retry-btn" onclick="location.reload()">Retake Checklist</button>
+    </div>
 </div>
 
 <script>
-    let scores = { earner: 0, learner: 0 };
+    const questions = [
+        { id: 1, text: "Do you struggle through the logic yourself to understand 'why'?", type: 'earner' },
+        { id: 2, text: "Do you research tools, watch tutorials, or build side projects in your free time?", type: 'earner' },
+        { id: 3, text: "Do you treat your labs and projects like a real-world job portfolio?", type: 'earner' },
+        { id: 4, text: "When you hit a bug, do you spend hours trying to fix it before asking for help?", type: 'earner' },
+        { id: 5, text: "Can you explain exactly how a system works in your own words?", type: 'earner' },
+        { id: 6, text: "Do you use AI to generate answers quickly just to submit them?", type: 'learner' },
+        { id: 7, text: "Do you spend most of your gaps 'doom-scrolling' on your phone?", type: 'learner' },
+        { id: 8, text: "Do you focus only on theory and 'definitions' to pass the exam?", type: 'learner' },
+        { id: 9, text: "Do you give up and ask for the code if a solution doesn't work in 5 minutes?", type: 'learner' },
+        { id: 10, text: "Do you use technical terms you don't fully understand because they were in a book?", type: 'learner' }
+    ];
 
-    function toggleBtn(btn, type) {
-        if (btn.innerText === "Select ▾") {
-            btn.innerText = "✅ Yes";
-            btn.className = "select-btn status-yes";
-            scores[type] += 2;
-        } else if (btn.innerText === "✅ Yes") {
-            btn.innerText = "❌ No";
-            btn.className = "select-btn status-no";
-            scores[type] -= 2;
-        } else {
-            btn.innerText = "Select ▾";
-            btn.className = "select-btn";
-        }
-        document.getElementById('earnerScore').innerText = scores.earner;
-        document.getElementById('learnerScore').innerText = scores.learner;
+    const responses = {};
+
+    function renderQuestions() {
+        const list = document.getElementById('questions-list');
+        questions.forEach(q => {
+            const row = document.createElement('div');
+            row.className = 'question-row';
+            row.innerHTML = `
+                <div class="question-text">${q.id}. ${q.text}</div>
+                <div class="options">
+                    <button class="btn-opt" onclick="selectOption(${q.id}, true, this)">Yes</button>
+                    <button class="btn-opt" onclick="selectOption(${q.id}, false, this)">No</button>
+                </div>
+            `;
+            list.appendChild(row);
+        });
     }
+
+    function selectOption(id, isYes, element) {
+        responses[id] = isYes;
+        const parent = element.parentElement;
+        parent.querySelectorAll('.btn-opt').forEach(btn => btn.classList.remove('selected'));
+        element.classList.add('selected');
+    }
+
+    function processResults() {
+        if (Object.keys(responses).length < 10) {
+            alert("Please answer all 10 questions first!");
+            return;
+        }
+
+        let earnerPoints = 0;
+        let learnerPoints = 0;
+        let yesCount = 0;
+
+        questions.forEach(q => {
+            if (responses[q.id] === true) {
+                yesCount++;
+                if (q.type === 'earner') earnerPoints += 2;
+                if (q.type === 'learner') learnerPoints += 2;
+            }
+        });
+
+        document.getElementById('quiz-screen').style.display = 'none';
+        document.getElementById('result-screen').style.display = 'block';
+
+        const category = document.getElementById('category-display');
+        const message = document.getElementById('message-display');
+
+        // Logic based on Earner Points (out of 10)
+        if (earnerPoints >= 8) {
+            category.innerText = "The Earner";
+            message.innerText = "You are ready to walk into an interview and demand a high salary. You have 'Muscle Memory'.";
+        } else if (earnerPoints >= 4) {
+            category.innerText = "The Mid-Tier";
+            message.innerText = "You have the knowledge, but you are leaning on 'Crutches.' You need to start building projects now.";
+        } else {
+            category.innerText = "The Liability (Omar Zone)";
+            message.innerText = "You have a degree on paper, but your skills are 'hollow.' You are asking an employer to pay for your missed education.";
+        }
+
+        document.getElementById('score-details').innerHTML = `
+            Total Yes Responses: ${yesCount} <br>
+            Earner Points: ${earnerPoints} | Learner Points: ${learnerPoints}
+        `;
+    }
+
+    renderQuestions();
 </script>
 
 </body>
